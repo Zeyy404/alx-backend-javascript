@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { uploadPhoto, createUser } from './utils';
 
 export default function handleProfileSignup() {
@@ -7,7 +6,7 @@ export default function handleProfileSignup() {
       const [photoResponse, userResponse] = resolve;
       console.log(`${photoResponse.body} ${userResponse.firstName} ${userResponse.lastName}`);
     })
-    .catch((reject) => {
+    .catch(() => {
       console.error('Signup system offline');
     });
 }
