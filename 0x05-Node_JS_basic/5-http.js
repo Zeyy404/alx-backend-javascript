@@ -41,9 +41,6 @@ const app = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'text/plain');
     res.end('Hello Holberton School!\n');
   } else if (req.url === '/students') {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-
     if (!databaseFile) {
       res.statusCode = 500;
       res.end('Cannot load the database\n');
@@ -51,13 +48,15 @@ const app = http.createServer((req, res) => {
     }
     const filePath = path.join(__dirname, databaseFile);
 
-    res.write('This is the list of our students\n');
-    countStudents(filePath, res)
+    fs.access(filePath)
       .then(() => {
-        res.end();
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+        res.write('This is the list of our students\n');
+
+        return countStudents(filePath, res);
       })
-      // eslint-disable-next-line no-unused-vars
-      .catch((error) => {
+      .catch(() => {
         res.statusCode = 500;
         res.end('Cannot load the database\n');
       });
