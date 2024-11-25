@@ -44,7 +44,7 @@ const app = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Hello Holberton School!\n');
-  } else if (req.url === '/student') {
+  } else if (req.url === '/students') {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
 
@@ -63,6 +63,11 @@ const app = http.createServer((req, res) => {
     res.statusCode = 404;
     res.end('Not Found\n');
   }
+});
+
+const port = 1245;
+app.listen(port, () => {
+  console.log(`Server running at http://127.0.0.1:${port}`);
 });
 
 module.exports = app;
