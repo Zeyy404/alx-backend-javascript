@@ -35,7 +35,7 @@ async function countStudents(path, res) {
 const databaseFile = process.argv[2];
 
 if (!databaseFile) {
-  console.error('Please provide the database file as an argument.');
+  console.error('Cannot load the database\n');
   process.exit(1);
 }
 
