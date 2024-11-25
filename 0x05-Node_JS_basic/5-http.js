@@ -34,11 +34,6 @@ async function countStudents(path, res) {
 
 const databaseFile = process.argv[2];
 
-if (!databaseFile) {
-  console.error('Cannot load the database\n');
-  process.exit(1);
-}
-
 const app = http.createServer((req, res) => {
   if (req.url === '/') {
     res.statusCode = 200;
@@ -48,6 +43,11 @@ const app = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
 
+    if (!databaseFile) {
+      res.statusCode = 500;
+      res.end('Cannot load the database\n');
+      return;
+    }
     const filePath = path.join(__dirname, databaseFile);
 
     res.write('This is the list of our students\n');
