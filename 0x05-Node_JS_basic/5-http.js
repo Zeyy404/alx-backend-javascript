@@ -27,6 +27,8 @@ async function countStudents(path, res) {
     for (const [field, names] of Object.entries(fields)) {
       res.write(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`);
     }
+
+    res.end();
   } catch (error) {
     res.statusCode = 500;
     res.end('Cannot load the database\n');
