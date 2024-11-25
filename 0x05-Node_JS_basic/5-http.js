@@ -28,7 +28,8 @@ async function countStudents(path, res) {
       res.write(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`);
     }
   } catch (error) {
-    throw new Error('Cannot load the database\n');
+    res.statusCode = 500;
+    res.end('Cannot load the database\n');
   }
 }
 
