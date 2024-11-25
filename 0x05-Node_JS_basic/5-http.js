@@ -2,12 +2,12 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs').promises;
 
-async function countStudents(path) {
+async function countStudents(path, res) {
   try {
     const data = await fs.readFile(path, 'utf8');
     const lines = data.trim().split('\n');
     if (lines.length <= 1) {
-      console.log('Number of students: 0');
+      res.write('Number of students: 0\n');
       return;
     }
     const fields = {};
@@ -23,12 +23,12 @@ async function countStudents(path) {
         fields[field].push(firstname);
       }
     });
-    console.log(`Number of students: ${totalStudents}`);
+    res.write(`Number of students: ${totalStudents}\n`);
     for (const [field, names] of Object.entries(fields)) {
-      console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
+      res.write(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`);
     }
   } catch (error) {
-    throw new Error('Cannot load the database');
+    throw new Error('Cannot load the database\n');
   }
 }
 
@@ -50,7 +50,8 @@ const app = http.createServer((req, res) => {
 
     const filePath = path.join(__dirname, databaseFile);
 
-    countStudents(filePath)
+    res.write('This is the list of our students\n');
+    countStudents(filePath, res)
       .then(() => {
         res.end();
       })
