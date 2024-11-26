@@ -51,7 +51,7 @@ const app = http.createServer((req, res) => {
 
     if (!databaseFile) {
       res.statusCode = 400;
-      res.end('Cannot load the database\n');
+      res.end('Cannot load the database');
       return;
     }
 
@@ -60,12 +60,11 @@ const app = http.createServer((req, res) => {
     countStudents(filePath)
       .then((output) => {
         res.write('This is the list of our students\n');
-        const outString = output.slice(0, -1);
-        res.end(outString);
+        res.end(output);
       })
       .catch(() => {
         res.statusCode = 404;
-        res.end('Cannot load the database\n');
+        res.end('Cannot load the database');
       });
   }
 });
