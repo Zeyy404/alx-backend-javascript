@@ -35,35 +35,36 @@ async function countStudents(path, res) {
   }
 }
 
-const databaseFile = process.argv[2];
-
 const app = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+
   if (req.url === '/') {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello Holberton School!');
-  } else if (req.url === '/students') {
+    res.write('Hello Holberton School!');
+    res.end();
+  }
+
+  if (req.url === '/students') {
+    const databaseFile = process.argv[2];
+
     if (!databaseFile) {
       res.statusCode = 500;
       res.end('Cannot load the database\n');
       return;
     }
+
     const filePath = path.join(__dirname, databaseFile);
 
-    fs.access(filePath, fs.constants.R_OK)
-      .then(() => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
+    countStudents(filePath)
+      .then((output) => {
+        const outString = output.slice(0, -1); // Remove the last newline
         res.write('This is the list of our students\n');
-        return countStudents(filePath, res);
+        res.end(outString);
       })
       .catch(() => {
-        res.statusCode = 500;
+        res.statusCode = 404;
         res.end('Cannot load the database\n');
       });
-  } else {
-    res.statusCode = 404;
-    res.end('Not Found\n');
   }
 });
 
