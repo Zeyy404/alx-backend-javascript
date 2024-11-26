@@ -2,16 +2,18 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs').promises;
 
-async function countStudents(path, res) {
+async function countStudents(filePath) {
   try {
-    const data = await fs.readFile(path, 'utf8');
+    const data = await fs.readFile(filePath, 'utf8');
     const lines = data.trim().split('\n');
+
     if (lines.length <= 1) {
-      res.write('Number of students: 0\n');
-      return;
+      return 'Number of students: 0\n';
     }
+
     const fields = {};
     let totalStudents = 0;
+
     lines.slice(1).forEach((line) => {
       const trimmedLine = line.trim();
       if (trimmedLine) {
@@ -23,15 +25,15 @@ async function countStudents(path, res) {
         fields[field].push(firstname);
       }
     });
-    res.write(`Number of students: ${totalStudents}\n`);
+
+    let output = `Number of students: ${totalStudents}\n`;
     for (const [field, names] of Object.entries(fields)) {
-      res.write(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`);
+      output += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
     }
 
-    res.end();
+    return output;
   } catch (error) {
-    res.statusCode = 500;
-    res.end('Cannot load the database\n');
+    throw new Error('Cannot load the database');
   }
 }
 
@@ -57,9 +59,8 @@ const app = http.createServer((req, res) => {
 
     countStudents(filePath)
       .then((output) => {
-        const outString = output.slice(0, -1); // Remove the last newline
         res.write('This is the list of our students\n');
-        res.end(outString);
+        res.end(output);
       })
       .catch(() => {
         res.statusCode = 404;
