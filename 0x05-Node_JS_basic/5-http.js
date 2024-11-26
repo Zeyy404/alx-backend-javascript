@@ -41,7 +41,7 @@ const app = http.createServer((req, res) => {
   if (req.url === '/') {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello Holberton School!\n');
+    res.end('Hello Holberton School!');
   } else if (req.url === '/students') {
     if (!databaseFile) {
       res.statusCode = 500;
@@ -50,12 +50,11 @@ const app = http.createServer((req, res) => {
     }
     const filePath = path.join(__dirname, databaseFile);
 
-    fs.access(filePath)
+    fs.access(filePath, fs.constants.R_OK)
       .then(() => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
         res.write('This is the list of our students\n');
-
         return countStudents(filePath, res);
       })
       .catch(() => {
