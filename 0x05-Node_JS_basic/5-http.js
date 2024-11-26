@@ -50,7 +50,7 @@ const app = http.createServer((req, res) => {
     const databaseFile = process.argv[2];
 
     if (!databaseFile) {
-      res.statusCode = 500;
+      res.statusCode = 400;
       res.end('Cannot load the database\n');
       return;
     }
@@ -60,7 +60,8 @@ const app = http.createServer((req, res) => {
     countStudents(filePath)
       .then((output) => {
         res.write('This is the list of our students\n');
-        res.end(output);
+        const outString = output.slice(0, -1);
+        res.end(outString);
       })
       .catch(() => {
         res.statusCode = 404;
